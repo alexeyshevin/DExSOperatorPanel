@@ -24,6 +24,8 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^4.0.3",
+    "sass": "^1.77.8",
+    "styled-components": "^6.1.12",
     "typescript": "^3.7.5"
   },
   "scripts": {
@@ -33,7 +35,7 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "eslint-config-react-app"
   },
   "browserslist": {
     "production": [

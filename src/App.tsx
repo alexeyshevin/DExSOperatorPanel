@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './App.css';
 import { Navbar } from './components/containers/navbar/Navbar';
 import { About } from './pages/About';
@@ -11,6 +11,7 @@ import DateCardsContainer from './dexop-event-log-reader/event-log-reader/date-c
 import EventTablePage from './dexop-event-log-reader/event-table/Pages/Events/event-table-page';
 import System from './pages/System/System';
 import Home from './pages/Home/Home';
+import { Users } from './components/Users/Users';
 // import Events from './pages/Events/Events';
 
 function App () {
@@ -28,6 +29,11 @@ function App () {
             exact
             path="/trands"
             component={Trands}
+          />
+          <Route
+            exact
+            path="/users"
+            component={Users}
           />
           <Route
             exact

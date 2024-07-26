@@ -1,4 +1,6 @@
 import React from 'react';
+import { LoginForm } from './forms/LoginForm/LoginForm';
+import { CreateUserForm } from './forms/CreateUserForm/CreateUserForm';
 import './users.scss';
 import styled from 'styled-components';
 
@@ -17,6 +19,8 @@ export const Users = () => {
                     </thead>
                 </table>
             </div>
+            <LoginForm />
+            <CreateUserForm />
         </>
     );
 };

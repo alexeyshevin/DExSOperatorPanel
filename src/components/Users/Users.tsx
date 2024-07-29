@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Modal from '../HOC/Modal/Modal';
 import { LoginForm } from './forms/LoginForm/LoginForm';
 import { CreateUserForm } from './forms/CreateUserForm/CreateUserForm';
 import './users.scss';
-import styled from 'styled-components';
 
 export const Users = () => {
+    const [showCreateUserForm, setShowCreateUserForm] = useState<boolean>(false);
+    const [showLoginForm, setShowLoginForm] = useState<boolean>(false);
+
+    const handleShowCreateUserModal = () => setShowCreateUserForm(!showCreateUserForm);
+    const handleShowLoginForm = () => setShowLoginForm(!showLoginForm);
+
     return (
         <>
             <div className="table-responsive">
@@ -19,8 +25,16 @@ export const Users = () => {
                     </thead>
                 </table>
             </div>
-            <LoginForm />
-            <CreateUserForm />
+            {showLoginForm && (
+                <Modal>
+                    <LoginForm />
+                </Modal>
+            )}
+            {showCreateUserForm && (
+                <Modal>
+                    <CreateUserForm />
+                </Modal>
+            )}
         </>
     );
 };

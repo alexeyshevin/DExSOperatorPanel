@@ -27,8 +27,12 @@ const UserSelect = styled.select`
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 `;
 
+type Props = { // TODO: define user schema or using user ID
+    password: string;
+};
+
 // TODO: create modals instead of forms
-export const LoginForm = () => {
+export const LoginForm = (props: Props) => {
     return (
         <LoginFormContainer>
             <div className="mb-3">
@@ -42,7 +46,7 @@ export const LoginForm = () => {
             </div>
             <div className="mb-3">
                 <label htmlFor="passwordInput" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="passwordInput" placeholder="Password" />
+                <input type="email" className="form-control" id="passwordInput" placeholder="Password" value={props.password} />
             </div>
             <button type="button" className="btn btn-primary">Log in</button>
             <button type="button" className="btn btn-danger" style={{ marginLeft: "1rem" }}>Cancel</button>

@@ -28,37 +28,47 @@ const RoleSelect = styled.select`
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 `;
 
-export const CreateUserForm = () => {
+type Props = {
+    firstName: string;
+    secondName: string;
+    role: string;
+    password: string;
+};
+
+const roles = ["Root", "Operator", "Guest"]; // temporary desicion
+
+export const CreateUserForm = (props: Props) => {
+    const [passwordToRepeat, setPasswordToRepeat] = useState<string | undefined>(undefined);
     const [isPasswordEqual, setIsPasswordEqual] = useState<boolean>(false);
 
     return (
         <CreateUserFormContainer>
             <div className="mb-3">
                 <label htmlFor="firstNameInput" className="form-label">First name</label>
-                <input type="email" className="form-control" id="firstNameInput" placeholder="First name" />
+                <input type="email" className="form-control" id="firstNameInput" placeholder="First name" value={props.firstName} />
             </div>
             <div className="mb-3">
                 <label htmlFor="secondNameInput" className="form-label">Second name</label>
-                <input type="email" className="form-control" id="secndNameInput" placeholder="Second name" />
+                <input type="email" className="form-control" id="secndNameInput" placeholder="Second name" value={props.secondName} />
             </div>
             <div className="mb-3">
             <label htmlFor="roleSelect" className="form-label">Role</label>
                 <RoleSelect id="roleSelect">
                     <option selected>Role...</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    {roles.map((value, id) => {
+                        return <option key={`${value}_${id}`}>{value}</option>
+                    })}
                 </RoleSelect>
             </div>
             <div className="mb-3">
                 <label htmlFor="passwordInput" className="form-label">Password</label>
-                <input type="email" className="form-control" id="passwordInput" placeholder="Password" />
+                <input type="email" className="form-control" id="passwordInput" placeholder="Password" value={props.password} />
             </div>
             <div className="mb-3">
                 <label htmlFor="passwordRepeatInput" className="form-label">Repeat password</label>
-                <input type="email" className="form-control" id="passwordRepeatInput" placeholder="Repeat password" />
+                <input type="email" className="form-control" id="passwordRepeatInput" placeholder="Repeat password" value={passwordToRepeat} />
             </div>
-            <button type="button" className="btn btn-primary">Create user</button>
+            <button type="button" className="btn btn-primary" disabled={!isPasswordEqual}>Create user</button>
             <button type="button" className="btn btn-danger" style={{ marginLeft: "1rem" }}>Cancel</button>
         </CreateUserFormContainer>
     );

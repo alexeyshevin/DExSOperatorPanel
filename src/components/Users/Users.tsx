@@ -1,40 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import Modal from '../HOC/Modal/Modal';
 import { LoginForm } from './forms/LoginForm/LoginForm';
 import { CreateUserForm } from './forms/CreateUserForm/CreateUserForm';
 import { ChangePasswordForm } from './forms/UpdateUserForm/ChangePasswordForm';
-import { api } from './api';
+import api from './api';
 import './users.scss';
 
-export const Users = () => {
-    const [showCreateUserForm, setShowCreateUserForm] = useState<boolean>(false);
-    const [showLoginForm, setShowLoginForm] = useState<boolean>(false);
-    const [showChangePasswordForm, setShowChangePasswordForm] = useState<boolean>(false);
-    const [data, setData] = useState<object | undefined>(undefined); // test instance
+export class Users extends Component {
+    private showCreateUserForm: boolean;
+    private showLoginForm: boolean;
+    private showChangePasswordForm: boolean;
+    private userList: any[];
+    private host: string = 'http://localhost:5005';
 
-    const handleShowCreateUserModal = () => setShowCreateUserForm(!showCreateUserForm);
-    const handleShowLoginForm = () => setShowLoginForm(!showLoginForm);
-    const handleChangePasswordForm = () => setShowChangePasswordForm(!showChangePasswordForm);
+    constructor (props: any) {
+        super(props);
+        this.showChangePasswordForm = false;
+        this.showLoginForm = false;
+        this.showCreateUserForm = false;
+        this.userList = [];
 
-    // fetch data testing
-    useEffect(() => {
-        const userApi = new api();
-        userApi.create();
-        userApi.getAll()
-            .then(resp => resp.data)
-            .then(data => setData(data));
-    }, []);
+        this.getAllUsers();
+    };
 
-    console.log(data);
+    private handleShowCreateUserModal = () => !this.showCreateUserForm;
+    private handleShowLoginForm = () => !this.showLoginForm;
+    private handleChangePasswordForm = () => !this.showChangePasswordForm;
 
-    const createUser = () => {};
+    private createUser = () => {
 
-    const getUser = () => {};
+    };
 
-    const updatePassword = () => {};
+    private getUser = () => {
 
-    return (
-        <>
+    };
+
+    private getAllUsers = () => {
+        api.get(`${this.host}/`)
+            .then(response => {
+                this.userList.push(response.data);
+            })
+            .catch(error => console.log(error));
+    };
+
+    private updatePassword = () => {
+
+    };
+
+    render () {
+        return (
+            <>
             <div className="table-responsive">
                 <table className="table table-bordered table-condensed table-hover">
                     <thead>
@@ -47,21 +62,22 @@ export const Users = () => {
                     </thead>
                 </table>
             </div>
-            {showLoginForm && (
+            {this.showLoginForm && (
                 <Modal>
                     <LoginForm />
                 </Modal>
             )}
-            {showCreateUserForm && (
+            {this.showCreateUserForm && (
                 <Modal>
                     <CreateUserForm />
                 </Modal>
             )}
-            {showChangePasswordForm && (
+            {this.showChangePasswordForm && (
                 <Modal>
                     <ChangePasswordForm />
                 </Modal>
             )}
         </>
-    );
+        );
+    }
 };

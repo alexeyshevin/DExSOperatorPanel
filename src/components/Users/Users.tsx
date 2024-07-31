@@ -58,6 +58,10 @@ export class Users extends Component {
                             <th>Second Name</th>
                             <th>Role</th>
                             <th>Last Login Time</th>
+                            {/* <th>
+                                <button type="button" className="btn btn-primary">Change</button>
+                                <button type="button" className="btn btn-danger" style={{ marginLeft: "1rem" }}>Delete</button>
+                            </th> */}
                         </tr>
                     </thead>
                 </table>

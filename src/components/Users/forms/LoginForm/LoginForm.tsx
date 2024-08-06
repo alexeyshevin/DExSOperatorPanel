@@ -28,6 +28,7 @@ const UserSelect = styled.select`
 `;
 
 type Props = { // TODO: define user schema or using user ID
+    id: number;
     password: string;
 };
 

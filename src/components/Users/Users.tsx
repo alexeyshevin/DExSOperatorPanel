@@ -3,23 +3,24 @@ import Modal from '../HOC/Modal/Modal';
 import { LoginForm } from './forms/LoginForm/LoginForm';
 import { CreateUserForm } from './forms/CreateUserForm/CreateUserForm';
 import { ChangePasswordForm } from './forms/UpdateUserForm/ChangePasswordForm';
-import api from './api';
 import './users.scss';
+import axios from 'axios';
+import { userServiceUrl } from '../../services-urls';
 
 export class Users extends Component {
     private showCreateUserForm: boolean;
     private showLoginForm: boolean;
     private showChangePasswordForm: boolean;
-    private userList: any[];
-    private host: string = 'http://localhost:5005';
+    private host: string = userServiceUrl;
 
     constructor (props: any) {
         super(props);
+        this.state = {
+            userList: []
+        };
         this.showChangePasswordForm = false;
         this.showLoginForm = false;
         this.showCreateUserForm = false;
-        this.userList = [];
-
         this.getAllUsers();
     };
 
@@ -35,12 +36,14 @@ export class Users extends Component {
 
     };
 
-    private getAllUsers = () => {
-        api.get(`${this.host}/`)
-            .then(response => {
-                this.userList.push(response.data);
-            })
-            .catch(error => console.log(error));
+    private getAllUsers = async () => {
+        try {
+            const response = await axios.get(`${this.host}/api/users`);
+            this.setState({ userList: response.data });
+            console.log(response.data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     private updatePassword = () => {
@@ -66,7 +69,7 @@ export class Users extends Component {
                     </thead>
                 </table>
             </div>
-            {this.showLoginForm && (
+            {/* {this.showLoginForm && (
                 <Modal>
                     <LoginForm />
                 </Modal>
@@ -80,7 +83,7 @@ export class Users extends Component {
                 <Modal>
                     <ChangePasswordForm />
                 </Modal>
-            )}
+            )} */}
         </>
         );
     }

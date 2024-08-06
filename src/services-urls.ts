@@ -25,4 +25,4 @@ export const urlEventLogReaderGet = `http://${EventLogReaderURL}/`;
 export const urlDexopSystemServicesGetIP = `http://${DexopSystemServicesURL}/v1/IP/`;
 export const urlDexopSystemServicesGetTime = `http://${DexopSystemServicesURL}/v1/time/`;
 
-export const userServiceUrl: string = `http://${UserServiceURL}/v1/users`;
+export const userServiceUrl: string = `http://${UserServiceURL}`;

@@ -6,7 +6,7 @@ const TaggerPort: number = 5004;
 const EventLoggerServicePort: number = 5007;
 const EventLogReaderPort: number = 5008;
 const DexopSystemServicesPort: number = 5011;
-const UserServicePort: number = 5005;
+const UserServicePort: number = 5010;
 
 const TaggerURL: string = `${HOST}:${TaggerPort}`;
 const EventLoggerServiceURL: string = `${HOST}:${EventLoggerServicePort}`;

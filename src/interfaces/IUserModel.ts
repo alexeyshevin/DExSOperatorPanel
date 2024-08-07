@@ -4,5 +4,6 @@ export interface IUserModel {
     secondName: string;
     role: string;
     password: string;
+    loginTime: Date;
     isDeleted: string;
 };

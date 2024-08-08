@@ -11,36 +11,76 @@ import { IUserModel } from '../../interfaces/IUserModel';
 interface IUsersContainerProps {
 };
 
-interface IUsersState {
+interface IUserState {
     userList: Array<IUserModel>;
+    user: IUserModel | undefined;
     isChangePasswordFormOpen: boolean;
     isCreateUserFormOpen: boolean;
     isLoginFormOpen: boolean;
+    newPassword: string | undefined;
+    valueToRepeat: string | undefined;
 }
 
-export class Users extends Component<IUsersContainerProps, IUsersState> {
+export class Users extends Component<IUsersContainerProps, IUserState> {
     private host: string = userServiceUrl;
 
-    constructor (props: any) {
+    constructor (props: IUserState) {
         super(props);
         this.state = {
             userList: [],
+            user: undefined,
             isChangePasswordFormOpen: false,
             isCreateUserFormOpen: false,
-            isLoginFormOpen: false
+            isLoginFormOpen: false,
+            newPassword: undefined,
+            valueToRepeat: undefined
         };
+
         this.getAllUsers();
     };
 
-    private handleShowCreateUserModal = () => this.setState({ isCreateUserFormOpen: !this.state.isCreateUserFormOpen });
-    private handleShowLoginForm = () => this.setState({ isLoginFormOpen: !this.state.isLoginFormOpen });
-    private handleChangePasswordForm = () => this.setState({ isChangePasswordFormOpen: !this.state.isChangePasswordFormOpen });
+    private handleShowCreateUserModal = () => this.setState({
+        isCreateUserFormOpen: !this.state.isCreateUserFormOpen
+    });
 
-    private createUser = () => {
+    private handleShowLoginForm = () => this.setState({
+        isLoginFormOpen: !this.state.isLoginFormOpen
+    });
 
+    private handleChangePasswordForm = () => this.setState({
+        isChangePasswordFormOpen: !this.state.isChangePasswordFormOpen
+    });
+
+    private handleAddUserButtonClick = () => this.setState({
+        isCreateUserFormOpen: true
+    });
+
+    private createUser = async () => {
+        try {
+            const config = {
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                data: {
+                    firstName: this.state.user?.firstName,
+                    secondName: this.state.user?.secondName,
+                    role: this.state.user?.role,
+                    password: this.state.user?.password
+                }
+            };
+
+            await axios.post(`${this.host}/api/user`, config);
+            this.handleShowCreateUserModal();
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     private getUser = () => {
+
+    };
+
+    private login = () => {
 
     };
 
@@ -64,6 +104,21 @@ export class Users extends Component<IUsersContainerProps, IUsersState> {
             <div className="table-responsive">
                 <table className="table table-bordered table-condensed table-hover">
                     <thead>
+                        <tr>
+                            <th
+                                style={{
+                                    border: "none"
+                                }}
+                            >
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={this.handleAddUserButtonClick}
+                                >
+                                    Add user
+                                </button>
+                            </th>
+                        </tr>
                         <tr>
                             <th>Id</th>
                             <th>First Name</th>
@@ -104,17 +159,35 @@ export class Users extends Component<IUsersContainerProps, IUsersState> {
             </div>
             {this.state.isLoginFormOpen && (
                 <Modal>
-                    <LoginForm />
+                    <LoginForm
+                        id={this.state.user?.id}
+                        password={this.state.user?.password}
+                        onLogin={this.login}
+                        onClose={this.handleShowLoginForm}
+                    />
                 </Modal>
             )}
             {this.state.isCreateUserFormOpen && (
                 <Modal>
-                    <CreateUserForm />
+                    <CreateUserForm
+                        firstName={this.state.user?.firstName}
+                        secondName={this.state.user?.secondName}
+                        role={this.state.user?.role}
+                        password={this.state.user?.password}
+                        onSave={this.createUser}
+                        onClose={this.handleShowCreateUserModal}
+                    />
                 </Modal>
             )}
             {this.state.isChangePasswordFormOpen && (
                 <Modal>
-                    <ChangePasswordForm />
+                    <ChangePasswordForm
+                        valueToRepeat={this.state.valueToRepeat}
+                        currentPassword={this.state.user?.password}
+                        newPassword={this.state.newPassword}
+                        onSave={this.updatePassword}
+                        onClose={this.handleChangePasswordForm}
+                    />
                 </Modal>
             )}
         </>

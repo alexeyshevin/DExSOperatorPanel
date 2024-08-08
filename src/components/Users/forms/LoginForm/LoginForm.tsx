@@ -28,8 +28,10 @@ const UserSelect = styled.select`
 `;
 
 type Props = { // TODO: define user schema or using user ID
-    id: number;
-    password: string;
+    id: number | undefined;
+    password: string | undefined;
+    onClose : () => void;
+    onLogin : () => void;
 };
 
 // TODO: create modals instead of forms
@@ -50,7 +52,14 @@ export const LoginForm = (props: Props) => {
                 <input type="email" className="form-control" id="passwordInput" placeholder="Password" value={props.password} />
             </div>
             <button type="button" className="btn btn-primary">Log in</button>
-            <button type="button" className="btn btn-danger" style={{ marginLeft: "1rem" }}>Cancel</button>
+            <button
+                type="button"
+                className="btn btn-danger"
+                style={{ marginLeft: "1rem" }}
+                onClick={props.onClose}
+                >
+                    Cancel
+            </button>
         </LoginFormContainer>
     );
 };

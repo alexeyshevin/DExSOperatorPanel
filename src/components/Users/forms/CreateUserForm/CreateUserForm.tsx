@@ -29,10 +29,12 @@ const RoleSelect = styled.select`
 `;
 
 type Props = {
-    firstName: string;
-    secondName: string;
-    role: string;
-    password: string;
+    firstName: string | undefined;
+    secondName: string | undefined;
+    role: string | undefined;
+    password: string | undefined;
+    onClose : () => void;
+    onSave : () => void;
 };
 
 const roles = ["Root", "Operator", "Guest"]; // temporary desicion
@@ -68,8 +70,21 @@ export const CreateUserForm = (props: Props) => {
                 <label htmlFor="passwordRepeatInput" className="form-label">Repeat password</label>
                 <input type="email" className="form-control" id="passwordRepeatInput" placeholder="Repeat password" value={passwordToRepeat} />
             </div>
-            <button type="button" className="btn btn-primary" disabled={!isPasswordEqual}>Create user</button>
-            <button type="button" className="btn btn-danger" style={{ marginLeft: "1rem" }}>Cancel</button>
+            <button
+                type="button"
+                className="btn btn-primary"
+                onClick={props.onSave}
+            >
+                Create user
+            </button>
+            <button
+                type="button"
+                className="btn btn-danger"
+                style={{ marginLeft: "1rem" }}
+                onClick={props.onClose}
+            >
+                Cancel
+            </button>
         </CreateUserFormContainer>
     );
 };

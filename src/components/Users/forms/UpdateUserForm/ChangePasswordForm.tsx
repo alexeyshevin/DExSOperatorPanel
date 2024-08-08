@@ -12,9 +12,11 @@ const ChangePasswordFormContainer = styled.div`
 `;
 
 type Props = {
-    currentPassword: string;
-    newPassword: string;
-    valueToRepeat: string;
+    currentPassword: string | undefined;
+    newPassword: string | undefined;
+    valueToRepeat: string | undefined;
+    onClose : () => void;
+    onSave : () => void;
 };
 
 export const ChangePasswordForm = (props: Props) => {
@@ -33,7 +35,14 @@ export const ChangePasswordForm = (props: Props) => {
                 <input type="email" className="form-control" id="repeatPasswordInput" placeholder="Repeat Password" value={props.valueToRepeat} />
             </div>
             <button type="button" className="btn btn-primary">Save</button>
-            <button type="button" className="btn btn-danger" style={{ marginLeft: "1rem" }}>Cancel</button>
+            <button
+                type="button"
+                className="btn btn-danger"
+                style={{ marginLeft: "1rem" }}
+                onClick={props.onClose}
+            >
+                Cancel
+            </button>
         </ChangePasswordFormContainer>
     );
 };

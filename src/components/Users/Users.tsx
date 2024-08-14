@@ -18,7 +18,8 @@ interface IUserState {
     isCreateUserFormOpen: boolean;
     isLoginFormOpen: boolean;
     newPassword: string | undefined;
-    valueToRepeat: string | undefined;
+    repeatPassword: string | undefined;
+    confirmNewPassword: string | undefined;
 }
 
 export class Users extends Component<IUsersContainerProps, IUserState> {
@@ -33,9 +34,12 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
             isCreateUserFormOpen: false,
             isLoginFormOpen: false,
             newPassword: undefined,
-            valueToRepeat: undefined
+            repeatPassword: undefined,
+            confirmNewPassword: undefined
         };
+    };
 
+    componentDidMount = () : void => {
         this.getAllUsers();
     };
 
@@ -71,13 +75,29 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
 
             await axios.post(`${this.host}/api/user`, config);
             this.handleShowCreateUserModal();
+            this.getAllUsers();
         } catch (error) {
             console.log(error);
         }
     };
 
-    private getUser = () => {
+    private getUser = async () => {
+        try {
+            const config = {
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                params: {
+                    password: this.state.user?.id
+                }
+            };
 
+            const response = await axios.put(`${this.host}/api/user`, config);
+            this.setState({ user: response.data });
+            console.log(this.state.user);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     private login = () => {
@@ -88,14 +108,48 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
         try {
             const response = await axios.get(`${this.host}/api/users`);
             this.setState({ userList: response.data });
-            console.log(this.state.userList);
         } catch (error) {
             console.log(error);
         }
     };
 
-    private updatePassword = () => {
+    private updatePassword = async () => {
+        try {
+            const config = {
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                params: {
+                    id: this.state.user?.id
+                },
+                data: {
+                    password: this.state.user?.password
+                }
+            };
 
+            await axios.put(`${this.host}/api/user`, config);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    private deleteUser = async () => {
+        try {
+            const user = this.state.userList?.find((user: IUserModel) => user);
+            const config = {
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                params: {
+                    id: user?.id
+                }
+            }
+            await axios.delete(`${this.host}/api/user`, config);
+            this.setState({ userList: this.state.userList?.filter(value => value === user!) });
+            this.getAllUsers();
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     render () {
@@ -143,13 +197,16 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
                                         >
                                             Change password
                                         </button>
-                                        <button
-                                            type="button"
-                                            className="btn btn-danger"
-                                            style={{ marginLeft: "4px" }}
-                                        >
-                                            Delete
-                                        </button>
+                                        {value.role !== "Root" && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-danger"
+                                                style={{ marginLeft: "4px" }}
+                                                onClick={this.deleteUser}
+                                            >
+                                                Delete
+                                            </button>
+                                        )}
                                     </th>
                                 </tr>
                             )
@@ -174,6 +231,7 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
                         secondName={this.state.user?.secondName}
                         role={this.state.user?.role}
                         password={this.state.user?.password}
+                        passwordRepeat={this.state.repeatPassword}
                         onSave={this.createUser}
                         onClose={this.handleShowCreateUserModal}
                     />
@@ -182,7 +240,7 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
             {this.state.isChangePasswordFormOpen && (
                 <Modal>
                     <ChangePasswordForm
-                        valueToRepeat={this.state.valueToRepeat}
+                        valueToRepeat={this.state.confirmNewPassword}
                         currentPassword={this.state.user?.password}
                         newPassword={this.state.newPassword}
                         onSave={this.updatePassword}

@@ -5,10 +5,10 @@ const ChangePasswordFormContainer = styled.div`
     width: 32%;
     height: 16%;
     position: relative;
+    top: 25%;
     z-index: 2;
     display: block;
     margin: 0 auto;
-    margin-top: 25%;
 `;
 
 type Props = {

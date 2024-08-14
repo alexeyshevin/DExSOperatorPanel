@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./login-form.scss";
 import styled from "styled-components";
 
@@ -6,6 +6,7 @@ const LoginFormContainer = styled.div`
     width: 32%;
     height: 16%;
     position: relative;
+    top: 25%;
     z-index: 2;
     display: block;
     margin: 0 auto;
@@ -36,6 +37,13 @@ type Props = { // TODO: define user schema or using user ID
 
 // TODO: create modals instead of forms
 export const LoginForm = (props: Props) => {
+    const [password, setPassword] = useState<string | undefined>(undefined);
+
+    const handlePasswordInput = (event: any) => {
+        setPassword(event.target.value);
+        props.password = password;
+    };
+
     return (
         <LoginFormContainer>
             <div className="mb-3">
@@ -49,7 +57,14 @@ export const LoginForm = (props: Props) => {
             </div>
             <div className="mb-3">
                 <label htmlFor="passwordInput" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="passwordInput" placeholder="Password" value={props.password} />
+                <input
+                    type="email"
+                    className="form-control"
+                    id="passwordInput"
+                    placeholder="Password"
+                    value={props.password!}
+                    onChange={handlePasswordInput}
+                />
             </div>
             <button type="button" className="btn btn-primary">Log in</button>
             <button

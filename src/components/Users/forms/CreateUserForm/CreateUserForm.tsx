@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './create-user-form.scss';
 import styled from 'styled-components';
-import { IUserModel } from '../../../../interfaces/IUserModel';
+import axios from 'axios';
+import { userServiceUrl } from '../../../../services-urls';
 
 const CreateUserFormContainer = styled.div`
     width: 32%;
@@ -13,7 +14,6 @@ const CreateUserFormContainer = styled.div`
     margin: 0 auto;
 `;
 
-// TODO: create reusable select component
 const RoleSelect = styled.select`
     display: block;
     width: 100%;
@@ -31,58 +31,73 @@ const RoleSelect = styled.select`
 `;
 
 type Props = {
-    firstName: string | undefined;
-    secondName: string | undefined;
-    role: string | undefined;
-    password: string | undefined;
-    passwordRepeat: string | undefined;
+    onCreate : () => void;
     onClose : () => void;
-    onSave : () => void;
 };
 
 const roles = ["Root", "Operator"];
 
 export const CreateUserForm = (props: Props) => {
-    const [firstName, setFirstName] = useState<string | undefined>(undefined);
-    const [secondName, setSecondName] = useState<string | undefined>(undefined);
-    const [role, setRole] = useState<string | undefined>(undefined);
-    const [password, setPassword] = useState<string | undefined>(undefined);
-    const [repeatPassword, setRepeatPassword] = useState<string | undefined>(undefined);
-    const [newUser, setNewUser] = useState<IUserModel | undefined>(undefined);
-    const [isPasswordEqual, setIsPasswordEqual] = useState<boolean>(false);
+    const [firstName, setFirstName] = useState<string>("");
+    const [secondName, setSecondName] = useState<string>("");
+    const [role, setRole] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [repeatPassword, setRepeatPassword] = useState<string>("");
+    const [isCreateButtonDisabled, setIsCreateButtonDisabled] = useState<boolean>(false);
 
     const handleFirstName = (event: any) => {
+        event.preventDefault();
         setFirstName(event.target.value);
-        props.firstName = firstName;
     };
 
     const handleSecondName = (event: any) => {
+        event.preventDefault();
         setSecondName(event.target.value);
-        props.secondName = secondName;
     };
 
-    const handleRole = (event:any) => {
+    const handleRole = (event: any) => {
+        event.preventDefault();
         setRole(event.target.value);
-        props.role = role;
     };
 
     const handlePassword = (event: any) => {
+        event.preventDefault();
         setPassword(event.target.value);
-        props.password = password;
     };
 
     const handlePasswordRepeat = (event: any) => {
+        event.preventDefault();
         setRepeatPassword(event.target.value);
-        props.passwordRepeat = repeatPassword;
     };
 
     useEffect(() => {
-        if (password !== repeatPassword) {
-            setIsPasswordEqual(false);
+        if (
+            password !== repeatPassword ||
+            firstName === "" ||
+            secondName === "" ||
+            role === "" ||
+            password === ""
+        ) {
+            setIsCreateButtonDisabled(false);
         } else {
-            setIsPasswordEqual(true);
+            setIsCreateButtonDisabled(true);
         }
-    }, [password, repeatPassword]);
+    }, [password, repeatPassword, firstName, secondName, role]);
+
+    const createUser = async () => {
+        try {
+            const config = {
+                firstName: firstName,
+                secondName: secondName,
+                role: role,
+                password: password
+            };
+
+            await axios.post(`${userServiceUrl}/api/user`, config);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <CreateUserFormContainer>
@@ -93,7 +108,7 @@ export const CreateUserForm = (props: Props) => {
                     className="form-control"
                     id="firstNameInput"
                     placeholder="First name"
-                    value={props.firstName!}
+                    value={firstName}
                     onChange={handleFirstName}
                 />
             </div>
@@ -104,18 +119,22 @@ export const CreateUserForm = (props: Props) => {
                     className="form-control"
                     id="secndNameInput"
                     placeholder="Second name"
-                    value={props.secondName!}
+                    value={secondName}
                     onChange={handleSecondName}
                 />
             </div>
             <div className="mb-3">
             <label htmlFor="roleSelect" className="form-label">Role</label>
-                <RoleSelect id="roleSelect" defaultValue="" placeholder='Select role'>
+                <RoleSelect
+                    id="roleSelect"
+                    defaultValue=""
+                    placeholder='Select role'
+                    value={role}
+                    onChange={handleRole}
+                >
                     {roles.map((value, id) => {
                         return <option
                             key={`${value}_${id}`}
-                            value={props.role!}
-                            onChange={handleRole}
                         >
                             {value}
                         </option>
@@ -129,7 +148,7 @@ export const CreateUserForm = (props: Props) => {
                     className="form-control"
                     id="passwordInput"
                     placeholder="Password"
-                    value={props.password!}
+                    value={password}
                     onChange={handlePassword}
                 />
             </div>
@@ -140,15 +159,15 @@ export const CreateUserForm = (props: Props) => {
                     className="form-control"
                     id="passwordRepeatInput"
                     placeholder="Repeat password"
-                    value={props.passwordRepeat}
+                    value={repeatPassword}
                     onChange={handlePasswordRepeat}
                 />
             </div>
             <button
                 type="button"
                 className="btn btn-primary"
-                onClick={props.onSave}
-                disabled={!isPasswordEqual}
+                onClick={createUser}
+                disabled={!isCreateButtonDisabled}
             >
                 Create user
             </button>

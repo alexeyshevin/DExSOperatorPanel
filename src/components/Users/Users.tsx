@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Modal from '../HOC/Modal/Modal';
 import { LoginForm } from './forms/LoginForm/LoginForm';
 import { CreateUserForm } from './forms/CreateUserForm/CreateUserForm';
-import { ChangePasswordForm } from './forms/UpdateUserForm/ChangePasswordForm';
+import { UpdateUserForm } from './forms/UpdateUserForm/UpdateUserForm';
 import './users.scss';
 import axios from 'axios';
 import { userServiceUrl } from '../../services-urls';
@@ -13,13 +13,10 @@ interface IUsersContainerProps {
 
 interface IUserState {
     userList: Array<IUserModel>;
-    user: IUserModel | undefined;
-    isChangePasswordFormOpen: boolean;
+    id: number | undefined;
+    isEditUserFormOpen: boolean;
     isCreateUserFormOpen: boolean;
     isLoginFormOpen: boolean;
-    newPassword: string | undefined;
-    repeatPassword: string | undefined;
-    confirmNewPassword: string | undefined;
 }
 
 export class Users extends Component<IUsersContainerProps, IUserState> {
@@ -29,13 +26,10 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
         super(props);
         this.state = {
             userList: [],
-            user: undefined,
-            isChangePasswordFormOpen: false,
+            id: undefined,
+            isEditUserFormOpen: false,
             isCreateUserFormOpen: false,
-            isLoginFormOpen: false,
-            newPassword: undefined,
-            repeatPassword: undefined,
-            confirmNewPassword: undefined
+            isLoginFormOpen: false
         };
     };
 
@@ -47,39 +41,23 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
         isCreateUserFormOpen: !this.state.isCreateUserFormOpen
     });
 
-    private handleShowLoginForm = () => this.setState({
-        isLoginFormOpen: !this.state.isLoginFormOpen
+    private handleUserCreation = () => {
+        this.setState({
+            isCreateUserFormOpen: !this.state.isCreateUserFormOpen
+        });
+    };
+
+    private handleShowEditUserForm = () => this.setState({
+        isEditUserFormOpen: !this.state.isEditUserFormOpen
     });
 
-    private handleChangePasswordForm = () => this.setState({
-        isChangePasswordFormOpen: !this.state.isChangePasswordFormOpen
+    private handleShowLoginForm = () => this.setState({
+        isLoginFormOpen: !this.state.isLoginFormOpen
     });
 
     private handleAddUserButtonClick = () => this.setState({
         isCreateUserFormOpen: true
     });
-
-    private createUser = async () => {
-        try {
-            const config = {
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
-                },
-                data: {
-                    firstName: this.state.user?.firstName,
-                    secondName: this.state.user?.secondName,
-                    role: this.state.user?.role,
-                    password: this.state.user?.password
-                }
-            };
-
-            await axios.post(`${this.host}/api/user`, config);
-            this.handleShowCreateUserModal();
-            this.getAllUsers();
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     private getUser = async () => {
         try {
@@ -179,7 +157,7 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
                             <th>Second Name</th>
                             <th>Role</th>
                             <th>Login Time</th>
-                            <th>Actions</th>
+                            <th>Edit</th>
                         </tr>
                         {this.state.userList.map((value, i) => {
                             return (
@@ -193,20 +171,13 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
                                         <button
                                             type="button"
                                             className="btn btn-primary"
-                                            onClick={this.handleChangePasswordForm}
+                                            onClick={() => this.setState({
+                                                id: value.id,
+                                                isEditUserFormOpen: !this.state.isEditUserFormOpen
+                                            })}
                                         >
-                                            Change password
+                                            Edit user
                                         </button>
-                                        {value.role !== "Root" && (
-                                            <button
-                                                type="button"
-                                                className="btn btn-danger"
-                                                style={{ marginLeft: "4px" }}
-                                                onClick={this.deleteUser}
-                                            >
-                                                Delete
-                                            </button>
-                                        )}
                                     </th>
                                 </tr>
                             )
@@ -214,7 +185,7 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
                     </thead>
                 </table>
             </div>
-            {this.state.isLoginFormOpen && (
+            {/* {this.state.isLoginFormOpen && (
                 <Modal>
                     <LoginForm
                         id={this.state.user?.id}
@@ -223,28 +194,21 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
                         onClose={this.handleShowLoginForm}
                     />
                 </Modal>
-            )}
+            )} */}
             {this.state.isCreateUserFormOpen && (
                 <Modal>
                     <CreateUserForm
-                        firstName={this.state.user?.firstName}
-                        secondName={this.state.user?.secondName}
-                        role={this.state.user?.role}
-                        password={this.state.user?.password}
-                        passwordRepeat={this.state.repeatPassword}
-                        onSave={this.createUser}
+                        onCreate={this.handleUserCreation}
                         onClose={this.handleShowCreateUserModal}
                     />
                 </Modal>
             )}
-            {this.state.isChangePasswordFormOpen && (
+            {this.state.isEditUserFormOpen && (
                 <Modal>
-                    <ChangePasswordForm
-                        valueToRepeat={this.state.confirmNewPassword}
-                        currentPassword={this.state.user?.password}
-                        newPassword={this.state.newPassword}
+                    <UpdateUserForm
+                        id={1}
                         onSave={this.updatePassword}
-                        onClose={this.handleChangePasswordForm}
+                        onClose={this.handleShowEditUserForm}
                     />
                 </Modal>
             )}

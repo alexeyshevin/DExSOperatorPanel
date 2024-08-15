@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const ChangePasswordFormContainer = styled.div`
+const UpdateUserFormContainer = styled.div`
     width: 32%;
     height: 16%;
     position: relative;
@@ -12,16 +12,14 @@ const ChangePasswordFormContainer = styled.div`
 `;
 
 type Props = {
-    currentPassword: string | undefined;
-    newPassword: string | undefined;
-    valueToRepeat: string | undefined;
+    id: number;
     onClose : () => void;
     onSave : () => void;
 };
 
-export const ChangePasswordForm = (props: Props) => {
+export const UpdateUserForm = (props: Props) => {
     return (
-        <ChangePasswordFormContainer>
+        <UpdateUserFormContainer>
             <div className="mb-3">
                 <label htmlFor="currentPasswordInput" className="form-label">Current password</label>
                 <input type="email" className="form-control" id="currentPasswordInput" placeholder="Current password" value={props.currentPassword} />
@@ -43,6 +41,6 @@ export const ChangePasswordForm = (props: Props) => {
             >
                 Cancel
             </button>
-        </ChangePasswordFormContainer>
+        </UpdateUserFormContainer>
     );
 };

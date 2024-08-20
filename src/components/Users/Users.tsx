@@ -59,25 +59,6 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
         isCreateUserFormOpen: true
     });
 
-    private getUser = async () => {
-        try {
-            const config = {
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
-                },
-                params: {
-                    password: this.state.user?.id
-                }
-            };
-
-            const response = await axios.put(`${this.host}/api/user`, config);
-            this.setState({ user: response.data });
-            console.log(this.state.user);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
     private login = () => {
 
     };
@@ -86,26 +67,6 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
         try {
             const response = await axios.get(`${this.host}/api/users`);
             this.setState({ userList: response.data });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    private updatePassword = async () => {
-        try {
-            const config = {
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
-                },
-                params: {
-                    id: this.state.user?.id
-                },
-                data: {
-                    password: this.state.user?.password
-                }
-            };
-
-            await axios.put(`${this.host}/api/user`, config);
         } catch (error) {
             console.log(error);
         }
@@ -206,8 +167,8 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
             {this.state.isEditUserFormOpen && (
                 <Modal>
                     <UpdateUserForm
-                        id={1}
-                        onSave={this.updatePassword}
+                        id={this.state.id!}
+                        onSave={this.handleShowEditUserForm}
                         onClose={this.handleShowEditUserForm}
                     />
                 </Modal>

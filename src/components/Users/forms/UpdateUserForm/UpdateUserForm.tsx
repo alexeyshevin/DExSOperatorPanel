@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { IUserModel } from "../../../../interfaces/IUserModel";
 import axios from "axios";
 import { userServiceUrl } from "../../../../services-urls";
+import { roles } from "../../roles";
+import { RoleSelect } from "../../RoleSelect";
 
 const UpdateUserFormContainer = styled.div`
     width: 32%;
@@ -25,6 +27,7 @@ export const UpdateUserForm = (props: Props) => {
     const [newSecondName, setNewSecondName] = useState<string| undefined>(undefined);
     const [newPassword, setNewPassword] = useState<string | undefined>(undefined);
     const [passwordConfirm, setPasswordConfirm] = useState<string | undefined>(undefined);
+    const [newRole, setNewRole] = useState<string | undefined>(undefined);
     const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(false);
     const [currentUser, setCurrentUser] = useState<IUserModel | undefined>(undefined);
 
@@ -36,12 +39,13 @@ export const UpdateUserForm = (props: Props) => {
 
     const handlePasswordConfirm = (event: any) => setPasswordConfirm(event.target.value);
 
+    const handleNewRoleValue = (event: any) => setNewRole(event.target.value);
+
     const getUser = async () => {
         const userId = props.id;
         try {
             const response = await axios.get(`${userServiceUrl}/api/user?id=${userId}`);
             setCurrentUser(response.data);
-            console.log(currentUser);
         } catch (error) {
             console.log(error);
         }
@@ -51,15 +55,26 @@ export const UpdateUserForm = (props: Props) => {
         getUser();
     }, []);
 
+    console.log(currentUser);
+
     const updateUser = async () => {
         try {
             const config = {
-                firstName: newFirstName,
-                secondName: newSecondName,
-                password: newPassword
+                "firstName": `${newFirstName}`,
+                "secondName": `${newSecondName}`,
+                "password": `${newPassword}`,
+                "role": `${newRole}`
             };
 
-            await axios.put(`${userServiceUrl}/api/user`, config);
+            await axios.put(`${userServiceUrl}/api/user?id=${currentUser?.id}`, config);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const deleteUser = async () => {
+        try {
+            await axios.delete(`${userServiceUrl}/api/user?id=${currentUser?.id}`);
         } catch (error) {
             console.log(error);
         }
@@ -71,9 +86,9 @@ export const UpdateUserForm = (props: Props) => {
             passwordConfirm === undefined ||
             newPassword !== passwordConfirm
         ) {
-            setIsSaveButtonDisabled(false);
-        } else {
             setIsSaveButtonDisabled(true);
+        } else {
+            setIsSaveButtonDisabled(false);
         }
     }, [newPassword, passwordConfirm]);
 
@@ -110,6 +125,24 @@ export const UpdateUserForm = (props: Props) => {
                     value={newSecondName}
                     onChange={handleSecondNameInput}
                 />
+            </div>
+            <div className="mb-3">
+            <label htmlFor="roleSelect" className="form-label">New role</label>
+                <RoleSelect
+                    id="roleSelect"
+                    defaultValue=""
+                    placeholder='Select role'
+                    value={newRole}
+                    onChange={handleNewRoleValue}
+                >
+                    {roles.map((value, id) => {
+                        return <option
+                            key={`${value}_${id}`}
+                        >
+                            {value}
+                        </option>
+                    })}
+                </RoleSelect>
             </div>
             <div className="mb-3">
                 <label
@@ -149,11 +182,19 @@ export const UpdateUserForm = (props: Props) => {
                 disabled={isSaveButtonDisabled}
                 onClick={updateUser}
             >
-                Save
+                Save user
             </button>
             <button
                 type="button"
                 className="btn btn-danger"
+                style={{ marginLeft: "1rem" }}
+                onClick={deleteUser}
+            >
+                Delete user
+            </button>
+            <button
+                type="button"
+                className="btn btn-secondary"
                 style={{ marginLeft: "1rem" }}
                 onClick={props.onClose}
             >

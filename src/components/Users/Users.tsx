@@ -59,33 +59,14 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
         isCreateUserFormOpen: true
     });
 
-    private login = () => {
+    // private login = () => {
 
-    };
+    // };
 
     private getAllUsers = async () => {
         try {
             const response = await axios.get(`${this.host}/api/users`);
             this.setState({ userList: response.data });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    private deleteUser = async () => {
-        try {
-            const user = this.state.userList?.find((user: IUserModel) => user);
-            const config = {
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
-                },
-                params: {
-                    id: user?.id
-                }
-            }
-            await axios.delete(`${this.host}/api/user`, config);
-            this.setState({ userList: this.state.userList?.filter(value => value === user!) });
-            this.getAllUsers();
         } catch (error) {
             console.log(error);
         }

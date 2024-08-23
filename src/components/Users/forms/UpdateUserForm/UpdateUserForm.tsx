@@ -41,6 +41,8 @@ export const UpdateUserForm = (props: Props) => {
 
     const handleNewRoleValue = (event: any) => setNewRole(event.target.value);
 
+    console.log(props.id);
+
     const getUser = async () => {
         const userId = props.id;
         try {

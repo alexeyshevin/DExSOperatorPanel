@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 import Modal from '../HOC/Modal/Modal';
 import { LoginForm } from './forms/LoginForm/LoginForm';
 import { CreateUserForm } from './forms/CreateUserForm/CreateUserForm';
@@ -7,6 +8,17 @@ import './users.scss';
 import axios from 'axios';
 import { userServiceUrl } from '../../services-urls';
 import { IUserModel } from '../../interfaces/IUserModel';
+import styled from 'styled-components';
+
+const StyledNavLink = styled(NavLink)`
+    color: #ffffff;
+    text-decoration: none;
+
+    &:hover {
+        color: #ffffff;
+        text-decoration: none;
+    }
+`;
 
 interface IUsersContainerProps {
 };
@@ -14,9 +26,6 @@ interface IUsersContainerProps {
 interface IUserState {
     userList: Array<IUserModel>;
     id: number | undefined;
-    isEditUserFormOpen: boolean;
-    isCreateUserFormOpen: boolean;
-    isLoginFormOpen: boolean;
 }
 
 export class Users extends Component<IUsersContainerProps, IUserState> {
@@ -26,42 +35,13 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
         super(props);
         this.state = {
             userList: [],
-            id: undefined,
-            isEditUserFormOpen: false,
-            isCreateUserFormOpen: false,
-            isLoginFormOpen: false
+            id: undefined
         };
     };
 
     componentDidMount = () : void => {
         this.getAllUsers();
     };
-
-    private handleShowCreateUserModal = () => this.setState({
-        isCreateUserFormOpen: !this.state.isCreateUserFormOpen
-    });
-
-    private handleUserCreation = () => {
-        this.setState({
-            isCreateUserFormOpen: !this.state.isCreateUserFormOpen
-        });
-    };
-
-    private handleShowEditUserForm = () => this.setState({
-        isEditUserFormOpen: !this.state.isEditUserFormOpen
-    });
-
-    private handleShowLoginForm = () => this.setState({
-        isLoginFormOpen: !this.state.isLoginFormOpen
-    });
-
-    private handleAddUserButtonClick = () => this.setState({
-        isCreateUserFormOpen: true
-    });
-
-    // private login = () => {
-
-    // };
 
     private getAllUsers = async () => {
         try {
@@ -87,9 +67,12 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
                                 <button
                                     type="button"
                                     className="btn btn-primary"
-                                    onClick={this.handleAddUserButtonClick}
                                 >
-                                    Add user
+                                    <StyledNavLink
+                                        to={"/create-user"}
+                                    >
+                                        Add user
+                                    </StyledNavLink>
                                 </button>
                             </th>
                         </tr>
@@ -114,11 +97,14 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
                                             type="button"
                                             className="btn btn-primary"
                                             onClick={() => this.setState({
-                                                id: value.id,
-                                                isEditUserFormOpen: !this.state.isEditUserFormOpen
+                                                id: value.id
                                             })}
                                         >
-                                            Edit user
+                                            <StyledNavLink
+                                                to={{ pathname: "/edit-user/:id", state: { id: value.id } }}
+                                            >
+                                                Edit user
+                                            </StyledNavLink>
                                         </button>
                                     </th>
                                 </tr>
@@ -127,33 +113,6 @@ export class Users extends Component<IUsersContainerProps, IUserState> {
                     </thead>
                 </table>
             </div>
-            {/* {this.state.isLoginFormOpen && (
-                <Modal>
-                    <LoginForm
-                        id={this.state.user?.id}
-                        password={this.state.user?.password}
-                        onLogin={this.login}
-                        onClose={this.handleShowLoginForm}
-                    />
-                </Modal>
-            )} */}
-            {this.state.isCreateUserFormOpen && (
-                <Modal>
-                    <CreateUserForm
-                        onCreate={this.handleUserCreation}
-                        onClose={this.handleShowCreateUserModal}
-                    />
-                </Modal>
-            )}
-            {this.state.isEditUserFormOpen && (
-                <Modal>
-                    <UpdateUserForm
-                        id={this.state.id!}
-                        onSave={this.handleShowEditUserForm}
-                        onClose={this.handleShowEditUserForm}
-                    />
-                </Modal>
-            )}
         </>
         );
     }

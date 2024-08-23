@@ -6,16 +6,6 @@ import { userServiceUrl } from '../../../../services-urls';
 import { roles } from '../../roles';
 import { RoleSelect } from '../../RoleSelect';
 
-const CreateUserFormContainer = styled.div`
-    width: 32%;
-    height: 24%;
-    position: relative;
-    top: 25%;
-    z-index: 2;
-    display: block;
-    margin: 0 auto;
-`;
-
 type Props = {
     onCreate : () => void;
     onClose : () => void;
@@ -84,7 +74,7 @@ export const CreateUserForm = (props: Props) => {
     };
 
     return (
-        <CreateUserFormContainer>
+        <div>
             <div className="mb-3">
                 <label htmlFor="firstNameInput" className="form-label">First name</label>
                 <input
@@ -163,6 +153,6 @@ export const CreateUserForm = (props: Props) => {
             >
                 Cancel
             </button>
-        </CreateUserFormContainer>
+        </div>
     );
 };
